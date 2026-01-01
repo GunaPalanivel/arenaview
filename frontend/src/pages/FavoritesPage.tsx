@@ -1,0 +1,1 @@
+// FavoritesPage - to be implemented
