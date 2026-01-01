@@ -1,1 +1,69 @@
-// Database schema - to be implemented
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String   // bcrypt hashed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  favorites Favorite[]
+
+  @@map("users")
+}
+
+model Game {
+  id        String   @id @default(uuid())
+  name      String
+  type      GameType // SPORTS or CASINO
+
+  // Sports-specific fields
+  sport     String?  // Cricket, Football, Tennis
+  league    String?  // IPL, EPL, La Liga
+  teamA     String?
+  teamB     String?
+  startTime DateTime?
+
+  // Casino-specific fields
+  provider  String?  // Evolution, Pragmatic Play
+  category  String?  // Slots, Live Casino, Table Games
+
+  imageUrl  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  favorites Favorite[]
+
+  @@index([type])
+  @@index([sport])
+  @@index([provider])
+  @@map("games")
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  gameId    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId]) // Prevent duplicate favorites
+  @@index([userId])
+  @@map("favorites")
+}
+
+enum GameType {
+  SPORTS
+  CASINO
+}
