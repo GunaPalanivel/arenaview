@@ -30,27 +30,74 @@ arenaview/
 
 ## Setup Instructions
 
-### Backend Setup
+### Prerequisites
+
+- Node.js v20+ installed
+- Docker Desktop installed and running
+- Git installed
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/GunaPalanivel/arenaview.git
+cd arenaview
+```
+
+### 2. Database Setup (PostgreSQL via Docker)
+
+```bash
+docker run --name arenaview-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=arenaview -p 5432:5432 -d postgres:15
+```
+
+### 3. Backend Setup
 
 ```bash
 cd backend
 npm install
 cp .env.example .env
-# Configure DATABASE_URL and JWT_SECRET in .env
-npx prisma migrate dev
+```
+
+Edit `.env` file:
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/arenaview"
+JWT_SECRET="your-64-character-secret-key-here"
+PORT=3001
+FRONTEND_URL="http://localhost:5173"
+```
+
+Run migrations and seed data:
+```bash
+npx prisma migrate dev --name init
 npx prisma db seed
 npm run dev
 ```
 
-### Frontend Setup
+Backend health check: `http://localhost:3001/health`
+
+### 4. Frontend Setup
 
 ```bash
 cd frontend
 npm install
 cp .env.example .env
-# Configure VITE_API_URL in .env
+```
+
+Edit `.env` file:
+```env
+VITE_API_URL="http://localhost:3001"
+```
+
+Start frontend:
+```bash
 npm run dev
 ```
+
+Frontend opens at: `http://localhost:5173`
+
+### 5. Test Credentials
+
+- Email: `test@example.com`
+- Password: `Test1234`
 
 ## Features
 
