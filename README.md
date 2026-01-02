@@ -30,14 +30,14 @@ A full-stack sports/casino games platform for viewing matches, filtering by spor
 
 ## Tech Stack
 
-| Layer          | Technology                    | Purpose                      |
-| -------------- | ----------------------------- | ---------------------------- |
+| Layer          | Technology                     | Purpose                      |
+| -------------- | ------------------------------ | ---------------------------- |
 | **Backend**    | Node.js + Express + TypeScript | REST API with clean patterns |
-| **Database**   | PostgreSQL + Prisma ORM       | Type-safe data persistence  |
-| **Auth**       | JWT + bcrypt                  | Secure authentication       |
-| **Validation** | Zod                           | Runtime type validation     |
-| **Frontend**   | React + TypeScript (upcoming) | SPA user interface          |
-| **Styling**    | Tailwind CSS (upcoming)       | Utility-first CSS           |
+| **Database**   | PostgreSQL + Prisma ORM        | Type-safe data persistence   |
+| **Auth**       | JWT + bcrypt                   | Secure authentication        |
+| **Validation** | Zod                            | Runtime type validation      |
+| **Frontend**   | React + TypeScript (upcoming)  | SPA user interface           |
+| **Styling**    | Tailwind CSS (upcoming)        | Utility-first CSS            |
 
 ## Project Structure
 
@@ -88,6 +88,7 @@ docker run --name arenaview-postgres \
 ```
 
 Verify database is running:
+
 ```bash
 docker ps | grep arenaview-postgres
 ```
@@ -101,6 +102,7 @@ cp .env.example .env
 ```
 
 Edit `.env` with:
+
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/arenaview"
 JWT_SECRET="your-minimum-32-character-secret-key-here-required"
@@ -109,18 +111,21 @@ FRONTEND_URL="http://localhost:5173"
 ```
 
 Initialize database and seed data:
+
 ```bash
 npx prisma migrate dev --name init
 npx prisma db seed
 ```
 
 The seed creates:
+
 - 1 test user (john@example.com / John1234)
 - 39 games:
   - 19 sports games (Cricket, Football, Tennis)
   - 20 casino games (Evolution, Pragmatic Play, Betsoft)
 
 Start backend:
+
 ```bash
 npm run dev
 ```
@@ -130,6 +135,7 @@ npm run dev
 ### 4. API Testing
 
 #### Authentication
+
 ```bash
 # Register new user
 curl -X POST http://localhost:3001/api/auth/register \
@@ -143,6 +149,7 @@ curl -X POST http://localhost:3001/api/auth/login \
 ```
 
 #### Games API
+
 ```bash
 # Get all games (requires Bearer token)
 curl http://localhost:3001/api/games \
@@ -166,6 +173,7 @@ curl "http://localhost:3001/api/games?page=1&limit=10" \
 ```
 
 #### Favorites API
+
 ```bash
 # Get user's favorites
 curl http://localhost:3001/api/favorites \
@@ -182,21 +190,22 @@ curl -X DELETE http://localhost:3001/api/favorites/{gameId} \
 
 ### 5. API Specification
 
-| Method | Endpoint                 | Auth | Status | Description                |
-| ------ | ------------------------ | ---- | ------ | -------------------------- |
-| POST   | `/api/auth/register`     | No   | ✅     | Create new user            |
-| POST   | `/api/auth/login`        | No   | ✅     | Authenticate user          |
-| GET    | `/api/games`             | Yes  | ✅     | List games with filters    |
-| GET    | `/api/games/:id`         | Yes  | ✅     | Get single game            |
-| GET    | `/api/favorites`         | Yes  | ✅     | Get user's favorites       |
-| POST   | `/api/favorites/:gameId` | Yes  | ✅     | Add game to favorites      |
-| DELETE | `/api/favorites/:gameId` | Yes  | ✅     | Remove from favorites      |
+| Method | Endpoint                 | Auth | Status | Description             |
+| ------ | ------------------------ | ---- | ------ | ----------------------- |
+| POST   | `/api/auth/register`     | No   | ✅     | Create new user         |
+| POST   | `/api/auth/login`        | No   | ✅     | Authenticate user       |
+| GET    | `/api/games`             | Yes  | ✅     | List games with filters |
+| GET    | `/api/games/:id`         | Yes  | ✅     | Get single game         |
+| GET    | `/api/favorites`         | Yes  | ✅     | Get user's favorites    |
+| POST   | `/api/favorites/:gameId` | Yes  | ✅     | Add game to favorites   |
+| DELETE | `/api/favorites/:gameId` | Yes  | ✅     | Remove from favorites   |
 
 ### Response Format
 
 All endpoints return consistent JSON:
 
 **Success (200, 201):**
+
 ```json
 {
   "success": true,
@@ -205,6 +214,7 @@ All endpoints return consistent JSON:
 ```
 
 **Error (4xx, 5xx):**
+
 ```json
 {
   "success": false,
@@ -276,6 +286,7 @@ Or register a new user via `/api/auth/register`
 ## Deployment Ready
 
 The backend is production-ready with:
+
 - TypeScript strict mode
 - Environment variable validation
 - Graceful error handling
