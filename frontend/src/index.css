@@ -1,29 +1,199 @@
+@import url("https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --color-primary: 14 165 233;
-    --color-accent: 217 70 239;
-    --color-dark: 15 23 42;
-    --color-success: 34 197 94;
-    --color-error: 239 68 68;
-    --color-warning: 245 158 11;
-    --font-sans: "Inter", system-ui, sans-serif;
+:root {
+  /* Colors */
+  --primary: #06b6d4; /* Cyan */
+  --secondary: #8b5cf6; /* Violet */
+  --background: #f8fafc; /* Near-white */
+  --text: #0f172a; /* Slate-900 */
+  --text-secondary: #475569; /* Slate-600 */
+  --border: #e2e8f0; /* Slate-200 */
+  --error: #ef4444; /* Red */
+  --success: #10b981; /* Green */
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-focus: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Satoshi", system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Clash Display", sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
+h4 {
+  font-size: 1.25rem;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+input::placeholder {
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Focus Ring (Cyan) */
+@layer utilities {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400;
   }
 
-  * {
-    @apply border-dark-200;
+  .focus-visible-ring {
+    @apply outline-none ring-2 ring-offset-2 ring-cyan-400;
   }
 
-  body {
-    @apply bg-dark-900 text-dark-50 font-sans antialiased;
+  .btn-small {
+    @apply h-10 px-4 text-sm font-medium rounded-button;
+  }
+
+  .btn-medium {
+    @apply h-12 px-6 text-base font-medium rounded-button;
+  }
+
+  .btn-large {
+    @apply h-14 px-8 text-lg font-semibold rounded-button;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    @apply transition-all duration-200 ease-in-out;
   }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 300ms ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideInUp 300ms ease-in-out;
+}
+
+.animate-slide-down {
+  animation: slideInDown 300ms ease-in-out;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Remove default scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
 }
