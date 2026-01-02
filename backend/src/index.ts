@@ -5,6 +5,9 @@ import dotenv from "dotenv";
 import { corsOptions } from "./config/cors";
 import { prisma } from "./config/database";
 import { errorHandler } from "./middleware/error.middleware";
+import authRoutes from "./routes/auth.routes";
+import testRoutes from "./routes/test.routes";
+import { authMiddleware } from "./middleware/auth.middleware";
 
 dotenv.config();
 
@@ -23,6 +26,10 @@ app.get("/health", (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/test", testRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
