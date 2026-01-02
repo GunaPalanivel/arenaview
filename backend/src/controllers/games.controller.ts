@@ -4,12 +4,12 @@ import { GamesFilterInput } from "../schemas/games.schema";
 import { successResponse } from "../utils/response";
 
 export const getGames = async (
-  req: Request<{}, {}, {}, GamesFilterInput>,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const filters = req.query as GamesFilterInput;
+    const filters = req.query as unknown as GamesFilterInput;
     const data = await GamesService.getGames(filters);
     successResponse(res, data, "Games retrieved");
   } catch (error) {

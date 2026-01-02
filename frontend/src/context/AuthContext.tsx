@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { authApi, RegisterData, LoginData } from "@/api/auth.api";
 
 interface User {
   id: string;
+  name: string;
   email: string;
-  username: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (token: string, user: User) => void;
+  login: (data: LoginData) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -36,7 +38,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoading(false);
   }, []);
 
-  const login = (newToken: string, newUser: User) => {
+  const login = async (data: LoginData) => {
+    const response = await authApi.login(data);
+    const { user: newUser, token: newToken } = response.data;
+
+    localStorage.setItem("token", newToken);
+    localStorage.setItem("user", JSON.stringify(newUser));
+    setToken(newToken);
+    setUser(newUser);
+  };
+
+  const register = async (data: RegisterData) => {
+    const response = await authApi.register(data);
+    const { user: newUser, token: newToken } = response.data;
+
     localStorage.setItem("token", newToken);
     localStorage.setItem("user", JSON.stringify(newUser));
     setToken(newToken);
@@ -56,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         user,
         token,
         login,
+        register,
         logout,
         isAuthenticated: !!token,
         isLoading,

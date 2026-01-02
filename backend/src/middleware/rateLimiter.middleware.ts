@@ -1,6 +1,20 @@
 import rateLimit from "express-rate-limit";
 import { Request, Response } from "express";
 
+// Extend Express Request type to include rateLimit
+declare global {
+  namespace Express {
+    interface Request {
+      rateLimit?: {
+        limit: number;
+        current: number;
+        remaining: number;
+        resetTime?: Date;
+      };
+    }
+  }
+}
+
 // Custom key generator - use IP + user agent fingerprint
 const keyGenerator = (req: Request): string => {
   const ip = req.ip || req.socket.remoteAddress || "unknown";

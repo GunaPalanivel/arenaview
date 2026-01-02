@@ -23,7 +23,7 @@ declare global {
 
 export const authMiddleware = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   try {
@@ -76,7 +76,7 @@ export const authMiddleware = async (
 // Optional auth middleware for public routes
 export const optionalAuthMiddleware = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   try {

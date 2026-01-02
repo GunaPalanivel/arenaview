@@ -9,7 +9,6 @@ import authRoutes from "./routes/auth.routes";
 import gamesRoutes from "./routes/games.routes";
 import favoritesRoutes from "./routes/favorites.routes";
 import testRoutes from "./routes/test.routes";
-import { authMiddleware } from "./middleware/auth.middleware";
 
 dotenv.config();
 
@@ -22,7 +21,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check endpoint
-app.get("/health", (req: Request, res: Response) => {
+app.get("/health", (_req: Request, res: Response) => {
   res.json({
     status: "ok",
     timestamp: new Date().toISOString(),
