@@ -44,3 +44,13 @@ export const apiLimiter = rateLimit({
   skipSuccessfulRequests: false,
   message: "Too many requests from this IP, please try again later",
 });
+
+// Favorites limiter (30 toggles per minute for POST/DELETE)
+export const favoritesLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // 30 requests per window
+  keyGenerator,
+  handler: rateLimitResponse,
+  skipSuccessfulRequests: false,
+  message: "Too many favorite toggles, please try again later",
+});
