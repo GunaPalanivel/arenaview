@@ -6,6 +6,7 @@ import { corsOptions } from "./config/cors";
 import { prisma } from "./config/database";
 import { errorHandler } from "./middleware/error.middleware";
 import authRoutes from "./routes/auth.routes";
+import gamesRoutes from "./routes/games.routes";
 import testRoutes from "./routes/test.routes";
 import { authMiddleware } from "./middleware/auth.middleware";
 
@@ -29,6 +30,7 @@ app.get("/health", (req: Request, res: Response) => {
 
 // API Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/games", gamesRoutes);
 app.use("/api/test", testRoutes);
 
 // Error handling middleware (must be last)
