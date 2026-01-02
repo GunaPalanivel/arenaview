@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import { Game } from "./games.api";
+import type { Game } from "./games.api";
 
 export interface Favorite {
   id: string;

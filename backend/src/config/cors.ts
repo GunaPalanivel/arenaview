@@ -15,7 +15,12 @@ export const corsOptions: cors.CorsOptions = {
       "http://localhost:3000",
     ];
 
-    if (allowedOrigins.includes(origin)) {
+    // Allow Vercel preview deployments
+    if (
+      origin.endsWith(".vercel.app") ||
+      origin.includes("arenaview") ||
+      allowedOrigins.includes(origin)
+    ) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));

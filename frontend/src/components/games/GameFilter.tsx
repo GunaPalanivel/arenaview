@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export interface GameFilterOptions {
-  type?: "sports" | "casino" | "";
+  type?: "SPORTS" | "CASINO" | "";
   sport?: string;
 }
 
@@ -35,11 +35,11 @@ const GameFilter: React.FC<GameFilterProps> = ({
   const [isTypeOpen, setIsTypeOpen] = useState(false);
   const [isSportOpen, setIsSportOpen] = useState(false);
 
-  const handleTypeChange = (type: "sports" | "casino" | "") => {
+  const handleTypeChange = (type: "SPORTS" | "CASINO" | "") => {
     const newFilters = {
       ...selectedFilters,
       type: type || undefined,
-      sport: type === "casino" ? undefined : selectedFilters.sport,
+      sport: type === "CASINO" ? undefined : selectedFilters.sport,
     };
     onFilterChange(newFilters);
     setIsTypeOpen(false);
@@ -83,7 +83,7 @@ const GameFilter: React.FC<GameFilterProps> = ({
         >
           <span>
             {selectedFilters.type
-              ? selectedFilters.type === "sports"
+              ? selectedFilters.type === "SPORTS"
                 ? "🏆 Sports"
                 : "🎰 Casino"
               : "Game Type"}
@@ -112,9 +112,9 @@ const GameFilter: React.FC<GameFilterProps> = ({
               All Types
             </button>
             <button
-              onClick={() => handleTypeChange("sports")}
+              onClick={() => handleTypeChange("SPORTS")}
               className={`${typeButtonClass} ${
-                selectedFilters.type === "sports"
+                selectedFilters.type === "SPORTS"
                   ? "bg-cyan-50 text-cyan-700 font-semibold"
                   : ""
               }`}
@@ -123,9 +123,9 @@ const GameFilter: React.FC<GameFilterProps> = ({
               🏆 Sports
             </button>
             <button
-              onClick={() => handleTypeChange("casino")}
+              onClick={() => handleTypeChange("CASINO")}
               className={`${typeButtonClass} ${
-                selectedFilters.type === "casino"
+                selectedFilters.type === "CASINO"
                   ? "bg-violet-50 text-violet-700 font-semibold"
                   : ""
               }`}
@@ -138,7 +138,7 @@ const GameFilter: React.FC<GameFilterProps> = ({
       </div>
 
       {/* Sport Filter - Only show for sports type */}
-      {selectedFilters.type === "sports" && (
+      {selectedFilters.type === "SPORTS" && (
         <div className="relative">
           <button
             onClick={() => setIsSportOpen(!isSportOpen)}

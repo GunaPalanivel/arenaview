@@ -95,15 +95,15 @@ const GameCard: React.FC<GameCardProps> = ({
         <div className="flex gap-2 mb-3 flex-wrap">
           <span
             className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-              game.type === "sports"
+              game.type === "SPORTS"
                 ? "bg-cyan-100 text-cyan-700"
                 : "bg-violet-100 text-violet-700"
             }`}
             aria-label={`Game type: ${
-              game.type === "sports" ? "Sports" : "Casino"
+              game.type === "SPORTS" ? "Sports" : "Casino"
             }`}
           >
-            {game.type === "sports" ? "🏆 Sports" : "🎰 Casino"}
+            {game.type === "SPORTS" ? "🏆 Sports" : "🎰 Casino"}
           </span>
 
           {game.sport && (
@@ -116,25 +116,29 @@ const GameCard: React.FC<GameCardProps> = ({
           )}
         </div>
 
-        {/* Description */}
+        {/* Provider & Teams */}
         <p className="text-sm text-slate-600 line-clamp-2 mb-3 flex-1">
-          {game.description || "No description available"}
+          {game.teamA && game.teamB
+            ? `${game.teamA} vs ${game.teamB}`
+            : game.category || game.provider || "No description available"}
         </p>
 
         {/* Footer Info */}
-        <div className="flex items-center justify-between text-xs text-slate-500 mb-3 pb-3 border-t border-slate-100 flex-wrap gap-2">
-          <span
-            className="font-medium"
-            aria-label={`Provider: ${game.provider}`}
-          >
-            {game.provider}
-          </span>
-          {game.rtp && (
+        <div className="flex items-center justify-between text-xs text-slate-500 mb-3 pt-3 border-t border-slate-100 flex-wrap gap-2">
+          {game.provider && (
+            <span
+              className="font-medium"
+              aria-label={`Provider: ${game.provider}`}
+            >
+              {game.provider}
+            </span>
+          )}
+          {game.league && (
             <span
               className="text-cyan-600 font-semibold"
-              aria-label={`Return to Player: ${game.rtp}%`}
+              aria-label={`League: ${game.league}`}
             >
-              RTP: {game.rtp}%
+              {game.league}
             </span>
           )}
         </div>

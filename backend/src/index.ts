@@ -37,18 +37,23 @@ app.use("/api/test", testRoutes);
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-// Start server
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/health`);
-});
+// Export app for Vercel serverless
+export default app;
 
-// Graceful shutdown
-process.on("SIGTERM", async () => {
-  console.log("SIGTERM received, closing server...");
-  server.close(async () => {
-    await prisma.$disconnect();
-    console.log("✅ Server closed");
-    process.exit(0);
+// Start server only if not in serverless environment
+if (process.env.VERCEL !== "1") {
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📍 Health check: http://localhost:${PORT}/health`);
   });
-});
+
+  // Graceful shutdown
+  process.on("SIGTERM", async () => {
+    console.log("SIGTERM received, closing server...");
+    server.close(async () => {
+      await prisma.$disconnect();
+      console.log("✅ Server closed");
+      process.exit(0);
+    });
+  });
+}

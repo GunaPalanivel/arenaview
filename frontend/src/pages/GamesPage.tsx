@@ -24,7 +24,7 @@ const GamesPage: React.FC = () => {
   } = useGames({
     limit: 12,
     search: searchQuery,
-    type: (filters.type || undefined) as "sports" | "casino" | undefined,
+    type: filters.type || undefined,
     sport: filters.sport,
   });
 

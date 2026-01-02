@@ -8,7 +8,6 @@ import { useGames, type Game } from "@/hooks/useGames";
 const FavoritesPage: React.FC = () => {
   const { showToast } = useToast();
   const {
-    favorites,
     isFavorite,
     toggleFavorite,
     isLoading: isFavoritesLoading,

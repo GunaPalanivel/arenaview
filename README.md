@@ -276,8 +276,8 @@ npm run dev
 ## Test Credentials
 
 ```
-Email: john@example.com
-Password: John1234
+Email: test@example.com
+Password: Test1234
 ```
 
 Or register a new user via the Register page.
