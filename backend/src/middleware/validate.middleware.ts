@@ -6,7 +6,7 @@ type ValidationTarget = "body" | "query" | "params";
 
 export const validate =
   (schema: AnyZodObject, target: ValidationTarget = "body") =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, _res: Response, next: NextFunction) => {
     try {
       const dataToValidate =
         target === "body"
