@@ -1,13 +1,15 @@
 import React, { useState, useCallback } from "react";
 import { useToast } from "@/context/ToastContext";
 import GameSearch from "@/components/games/GameSearch";
-import GameFilter, { type GameFilterOptions } from "@/components/games/GameFilter";
+import GameFilter, {
+  type GameFilterOptions,
+} from "@/components/games/GameFilter";
 import GameList from "@/components/games/GameList";
 import { useGames, type Game } from "@/hooks/useGames";
+import { useFavorites } from "@/hooks/useFavorites";
 
 const GamesPage: React.FC = () => {
   const { showToast } = useToast();
-  const [loadingFavorite, setLoadingFavorite] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<GameFilterOptions>({});
 
@@ -22,9 +24,12 @@ const GamesPage: React.FC = () => {
   } = useGames({
     limit: 12,
     search: searchQuery,
-    type: filters.type,
+    type: (filters.type || undefined) as "sports" | "casino" | undefined,
     sport: filters.sport,
   });
+
+  // Manage favorites
+  const { isFavorite, toggleFavorite, isToggling } = useFavorites();
 
   const handleLoadMore = useCallback(() => {
     fetchNextPage();
@@ -39,20 +44,15 @@ const GamesPage: React.FC = () => {
   }, []);
 
   const handleFavoriteToggle = async (gameId: string) => {
-    setLoadingFavorite(gameId);
     try {
-      // TODO: Implement favorite toggle with API
-      const game = games.find((g) => g.id === gameId);
-      if (game) {
-        showToast(
-          game.isFavorite ? "Removed from favorites" : "Added to favorites",
-          game.isFavorite ? "info" : "success"
-        );
-      }
+      toggleFavorite(gameId);
+      const willBeFavorite = !isFavorite(gameId);
+      showToast(
+        willBeFavorite ? "Added to favorites" : "Removed from favorites",
+        "success"
+      );
     } catch (err) {
       showToast("Failed to update favorite status", "error");
-    } finally {
-      setLoadingFavorite(null);
     }
   };
 
@@ -60,6 +60,12 @@ const GamesPage: React.FC = () => {
     // TODO: Implement game launch
     showToast(`Launching ${game.name}...`, "info");
   };
+
+  // Map games with favorite status
+  const gamesWithFavorites = games.map((game) => ({
+    ...game,
+    isFavorite: isFavorite(game.id),
+  }));
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -94,22 +100,25 @@ const GamesPage: React.FC = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-700">
+          <div
+            role="alert"
+            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
+          >
+            <p className="text-red-700 font-medium">
               Failed to load games. Please try again later.
             </p>
           </div>
         )}
 
         <GameList
-          games={games}
+          games={gamesWithFavorites}
           isLoading={isLoading}
           isFetchingNextPage={isFetchingNextPage}
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
           onFavoriteToggle={handleFavoriteToggle}
           onPlay={handlePlayGame}
-          isLoadingFavorite={loadingFavorite}
+          isLoadingFavorite={isToggling ? games[0]?.id ?? null : null}
           emptyMessage={
             searchQuery || filters.type || filters.sport
               ? "No games match your search or filters. Try adjusting your criteria."
@@ -122,4 +131,3 @@ const GamesPage: React.FC = () => {
 };
 
 export default GamesPage;
-

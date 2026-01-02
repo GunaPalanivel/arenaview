@@ -25,6 +25,7 @@ const SPORTS = [
 
 /**
  * GameFilter - Filter games by type and sport
+ * Accessible with proper ARIA labels, semantic dropdowns, and keyboard navigation
  */
 const GameFilter: React.FC<GameFilterProps> = ({
   onFilterChange,
@@ -59,28 +60,26 @@ const GameFilter: React.FC<GameFilterProps> = ({
     setIsSportOpen(false);
   };
 
-  const hasActiveFilters =
-    selectedFilters.type || selectedFilters.sport;
+  const hasActiveFilters = selectedFilters.type || selectedFilters.sport;
+
+  const typeButtonClass =
+    "w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors duration-200 border-b border-slate-100 last:border-b-0 text-sm";
 
   return (
-    <div className="flex flex-col gap-4">
+    <fieldset className="flex flex-col gap-4">
+      <legend className="sr-only">Filter games</legend>
+
       {/* Type Filter */}
       <div className="relative">
         <button
           onClick={() => setIsTypeOpen(!isTypeOpen)}
           disabled={isLoading}
-          className="
-            w-full sm:w-auto px-4 py-3 
-            bg-white border border-slate-300 rounded-lg
-            flex items-center justify-between gap-2
-            text-slate-900 font-medium text-sm
-            hover:border-cyan-400 hover:bg-slate-50
-            transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-cyan-400
-            disabled:opacity-50 disabled:cursor-not-allowed
-          "
+          className="w-full sm:w-auto px-4 py-3 bg-white border border-slate-300 rounded-lg flex items-center justify-between gap-2 text-slate-900 font-medium text-sm hover:border-cyan-400 hover:bg-slate-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Filter by game type"
-          aria-expanded={isTypeOpen}
+          {...(isTypeOpen && { "aria-expanded": "true" })}
+          {...(!isTypeOpen && { "aria-expanded": "false" })}
+          aria-controls="type-menu"
+          aria-haspopup="true"
         >
           <span>
             {selectedFilters.type
@@ -94,58 +93,43 @@ const GameFilter: React.FC<GameFilterProps> = ({
             className={`transition-transform duration-200 ${
               isTypeOpen ? "transform rotate-180" : ""
             }`}
+            aria-hidden="true"
           />
         </button>
 
         {/* Type Dropdown */}
         {isTypeOpen && (
-          <div className="
-            absolute top-full left-0 mt-2 w-full sm:w-auto
-            bg-white border border-slate-300 rounded-lg
-            shadow-lg z-20
-          ">
+          <div
+            id="type-menu"
+            className="absolute top-full left-0 mt-2 w-full sm:w-auto bg-white border border-slate-300 rounded-lg shadow-lg z-20"
+            role="menu"
+          >
             <button
               onClick={() => handleTypeChange("")}
-              className="
-                w-full text-left px-4 py-3
-                hover:bg-slate-50
-                transition-colors duration-200
-                border-b border-slate-100 last:border-b-0
-                text-sm
-              "
+              className={typeButtonClass}
+              role="menuitem"
             >
               All Types
             </button>
             <button
               onClick={() => handleTypeChange("sports")}
-              className={`
-                w-full text-left px-4 py-3
-                hover:bg-slate-50
-                transition-colors duration-200
-                border-b border-slate-100 last:border-b-0
-                text-sm
-                ${
-                  selectedFilters.type === "sports"
-                    ? "bg-cyan-50 text-cyan-700 font-semibold"
-                    : ""
-                }
-              `}
+              className={`${typeButtonClass} ${
+                selectedFilters.type === "sports"
+                  ? "bg-cyan-50 text-cyan-700 font-semibold"
+                  : ""
+              }`}
+              role="menuitem"
             >
               🏆 Sports
             </button>
             <button
               onClick={() => handleTypeChange("casino")}
-              className={`
-                w-full text-left px-4 py-3
-                hover:bg-slate-50
-                transition-colors duration-200
-                text-sm
-                ${
-                  selectedFilters.type === "casino"
-                    ? "bg-violet-50 text-violet-700 font-semibold"
-                    : ""
-                }
-              `}
+              className={`${typeButtonClass} ${
+                selectedFilters.type === "casino"
+                  ? "bg-violet-50 text-violet-700 font-semibold"
+                  : ""
+              }`}
+              role="menuitem"
             >
               🎰 Casino
             </button>
@@ -159,18 +143,12 @@ const GameFilter: React.FC<GameFilterProps> = ({
           <button
             onClick={() => setIsSportOpen(!isSportOpen)}
             disabled={isLoading}
-            className="
-              w-full sm:w-auto px-4 py-3 
-              bg-white border border-slate-300 rounded-lg
-              flex items-center justify-between gap-2
-              text-slate-900 font-medium text-sm
-              hover:border-cyan-400 hover:bg-slate-50
-              transition-all duration-200
-              focus:outline-none focus:ring-2 focus:ring-cyan-400
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className="w-full sm:w-auto px-4 py-3 bg-white border border-slate-300 rounded-lg flex items-center justify-between gap-2 text-slate-900 font-medium text-sm hover:border-cyan-400 hover:bg-slate-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Filter by sport"
-            aria-expanded={isSportOpen}
+            {...(isSportOpen && { "aria-expanded": "true" })}
+            {...(!isSportOpen && { "aria-expanded": "false" })}
+            aria-controls="sport-menu"
+            aria-haspopup="true"
           >
             <span>{selectedFilters.sport || "Select Sport"}</span>
             <ChevronDown
@@ -178,31 +156,25 @@ const GameFilter: React.FC<GameFilterProps> = ({
               className={`transition-transform duration-200 ${
                 isSportOpen ? "transform rotate-180" : ""
               }`}
+              aria-hidden="true"
             />
           </button>
 
           {/* Sport Dropdown */}
           {isSportOpen && (
-            <div className="
-              absolute top-full left-0 mt-2 w-full sm:w-auto min-w-48
-              bg-white border border-slate-300 rounded-lg
-              shadow-lg z-20
-              max-h-64 overflow-y-auto
-            ">
+            <div
+              id="sport-menu"
+              className="absolute top-full left-0 mt-2 w-full sm:w-auto min-w-48 bg-white border border-slate-300 rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto"
+              role="menu"
+            >
               <button
                 onClick={() => handleSportChange("")}
-                className="
-                  w-full text-left px-4 py-3
-                  hover:bg-slate-50
-                  transition-colors duration-200
-                  border-b border-slate-100
-                  text-sm
-                  ${
-                    !selectedFilters.sport
-                      ? "bg-cyan-50 text-cyan-700 font-semibold"
-                      : ""
-                  }
-                "
+                className={`${typeButtonClass} ${
+                  !selectedFilters.sport
+                    ? "bg-cyan-50 text-cyan-700 font-semibold"
+                    : ""
+                }`}
+                role="menuitem"
               >
                 All Sports
               </button>
@@ -210,18 +182,12 @@ const GameFilter: React.FC<GameFilterProps> = ({
                 <button
                   key={sport}
                   onClick={() => handleSportChange(sport)}
-                  className={`
-                    w-full text-left px-4 py-3
-                    hover:bg-slate-50
-                    transition-colors duration-200
-                    border-b border-slate-100 last:border-b-0
-                    text-sm
-                    ${
-                      selectedFilters.sport === sport
-                        ? "bg-cyan-50 text-cyan-700 font-semibold"
-                        : ""
-                    }
-                  `}
+                  className={`${typeButtonClass} ${
+                    selectedFilters.sport === sport
+                      ? "bg-cyan-50 text-cyan-700 font-semibold"
+                      : ""
+                  }`}
+                  role="menuitem"
                 >
                   {sport}
                 </button>
@@ -236,21 +202,12 @@ const GameFilter: React.FC<GameFilterProps> = ({
         <button
           onClick={handleReset}
           disabled={isLoading}
-          className="
-            w-full sm:w-auto px-4 py-2
-            text-sm font-medium
-            text-slate-600 hover:text-slate-900
-            border border-slate-300 rounded-lg
-            hover:bg-slate-50
-            transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-cyan-400
-            disabled:opacity-50 disabled:cursor-not-allowed
-          "
+          className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Clear Filters
         </button>
       )}
-    </div>
+    </fieldset>
   );
 };
 
