@@ -1,68 +1,72 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { z } from 'zod'
-import { useAuth } from '@/context/AuthContext'
-import { useToast } from '@/context/ToastContext'
-import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { z } from "zod";
+import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-})
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+});
 
-type LoginFormData = z.infer<typeof loginSchema>
+type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginForm: React.FC = () => {
-  const navigate = useNavigate()
-  const { login } = useAuth()
-  const { showToast } = useToast()
-  
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const { showToast } = useToast();
+
   const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-  })
-  const [errors, setErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({})
-  const [isLoading, setIsLoading] = useState(false)
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof LoginFormData, string>>
+  >({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name as keyof LoginFormData]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }))
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrors({})
-    
+    e.preventDefault();
+    setErrors({});
+
     // Validate form data
-    const result = loginSchema.safeParse(formData)
+    const result = loginSchema.safeParse(formData);
     if (!result.success) {
-      const fieldErrors: Partial<Record<keyof LoginFormData, string>> = {}
-      result.error.errors.forEach((err) => {
-        if (err.path[0]) {
-          fieldErrors[err.path[0] as keyof LoginFormData] = err.message
+      const fieldErrors: Partial<Record<keyof LoginFormData, string>> = {};
+      result.error.issues.forEach((issue) => {
+        if (issue.path[0]) {
+          fieldErrors[issue.path[0] as keyof LoginFormData] = issue.message;
         }
-      })
-      setErrors(fieldErrors)
-      return
+      });
+      setErrors(fieldErrors);
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await login(formData)
-      showToast('Login successful!', 'success')
-      navigate('/games')
+      await login(formData);
+      showToast("Login successful!", "success");
+      navigate("/games");
     } catch (error: any) {
-      const message = error.response?.data?.error?.message || 'Login failed. Please try again.'
-      showToast(message, 'error')
+      const message =
+        error.response?.data?.error?.message ||
+        "Login failed. Please try again.";
+      showToast(message, "error");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -101,7 +105,7 @@ const LoginForm: React.FC = () => {
       </Button>
 
       <p className="text-center text-sm text-slate-600">
-        Don't have an account?{' '}
+        Don't have an account?{" "}
         <Link
           to="/register"
           className="text-cyan-400 hover:text-cyan-500 font-medium transition-colors"
@@ -110,7 +114,7 @@ const LoginForm: React.FC = () => {
         </Link>
       </p>
     </form>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

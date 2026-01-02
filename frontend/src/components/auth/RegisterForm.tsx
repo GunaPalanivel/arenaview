@@ -51,9 +51,9 @@ const RegisterForm: React.FC = () => {
     const result = registerSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof RegisterFormData, string>> = {};
-      result.error.errors.forEach((err) => {
-        if (err.path[0]) {
-          fieldErrors[err.path[0] as keyof RegisterFormData] = err.message;
+      result.error.issues.forEach((issue) => {
+        if (issue.path[0]) {
+          fieldErrors[issue.path[0] as keyof RegisterFormData] = issue.message;
         }
       });
       setErrors(fieldErrors);

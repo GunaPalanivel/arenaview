@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from "react";
+import React, { type InputHTMLAttributes } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -43,7 +43,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             }
             ${className}
           `}
-          aria-invalid={hasError}
+          {...(hasError && { "aria-invalid": "true" })}
           aria-describedby={
             error
               ? `${inputId}-error`
