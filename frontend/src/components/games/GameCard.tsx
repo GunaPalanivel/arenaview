@@ -1,7 +1,7 @@
 import React from "react";
-import { Heart } from "lucide-react";
-import { type Game } from "@/hooks/useGames";
-import Button from "@/components/ui/Button";
+import { Heart, Play } from "lucide-react";
+import type { Game } from "@/hooks/useGames";
+import { cn } from "@/utils/cn";
 
 interface GameCardProps {
   game: Game;
@@ -11,8 +11,8 @@ interface GameCardProps {
 }
 
 /**
- * GameCard - Displays a single game with image, info, and actions
- * Accessible with proper ARIA labels, keyboard navigation, and semantic HTML
+ * GameCard - Enhanced with glassmorphism and gradients
+ * Displays a single game with modern design patterns
  */
 const GameCard: React.FC<GameCardProps> = ({
   game,
@@ -35,19 +35,34 @@ const GameCard: React.FC<GameCardProps> = ({
     ? `Remove ${game.name} from favorites`
     : `Add ${game.name} to favorites`;
 
+  const isSports = game.type === "SPORTS";
+
   return (
     <article
-      className="group h-full flex flex-col bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden border border-slate-100 hover:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-400 focus-within:ring-offset-2"
+      className={cn(
+        "group h-full flex flex-col rounded-2xl overflow-hidden",
+        "transition-all duration-300 cursor-pointer",
+        "hover:shadow-elevated hover:scale-105",
+        "glass-accent border border-white/20",
+        "focus-within:ring-2 focus-within:ring-cyan-400"
+      )}
       role="region"
       aria-label={`${game.name} game card`}
     >
-      {/* Game Image */}
-      <div className="relative w-full h-48 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+      {/* Game Image with Gradient Overlay */}
+      <div
+        className={cn(
+          "relative w-full h-40 overflow-hidden bg-gradient-to-br",
+          isSports
+            ? "from-cyan-600/80 to-blue-700/80"
+            : "from-violet-600/80 to-pink-700/80"
+        )}
+      >
         {game.imageUrl ? (
           <img
             src={game.imageUrl}
             alt={`${game.name} game cover image`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             loading="lazy"
           />
         ) : (
@@ -55,104 +70,113 @@ const GameCard: React.FC<GameCardProps> = ({
             className="w-full h-full flex items-center justify-center"
             aria-hidden="true"
           >
-            <div className="text-slate-400 text-center">
-              <div className="text-2xl font-bold opacity-50">
+            <div className="text-white/50 text-center">
+              <div className="text-4xl font-bold">
                 {game.name.charAt(0).toUpperCase()}
               </div>
-              <div className="text-xs mt-1">No Image</div>
             </div>
           </div>
         )}
 
-        {/* Favorite Button - Fixed position overlay */}
+        {/* Overlay Gradient */}
+        <div
+          className={cn(
+            "absolute inset-0 opacity-30 group-hover:opacity-10 transition-opacity",
+            isSports
+              ? "bg-gradient-to-t from-cyan-900 to-transparent"
+              : "bg-gradient-to-t from-violet-900 to-transparent"
+          )}
+        />
+
+        {/* Favorite Button */}
         <button
           onClick={handleFavoriteClick}
           disabled={isLoadingFavorite}
-          className="absolute top-2 right-2 p-2 rounded-full bg-white/90 shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-red-400"
+          className={cn(
+            "absolute top-3 right-3 p-2 rounded-full",
+            "transition-all duration-200 backdrop-blur-md",
+            "hover:scale-110 active:scale-95 disabled:opacity-50",
+            "focus:outline-none focus:ring-2 focus:ring-red-400",
+            game.isFavorite
+              ? "bg-red-500/40 border border-red-400/50 text-red-200 hover:bg-red-500/60"
+              : "bg-white/20 border border-white/30 text-white/80 hover:bg-white/30"
+          )}
           aria-label={favoriteAriaLabel}
           {...(game.isFavorite && { "aria-pressed": "true" })}
         >
           <Heart
-            size={20}
-            className={`transition-colors duration-200 ${
-              game.isFavorite
-                ? "fill-red-500 text-red-500"
-                : "text-slate-400 hover:text-red-500"
-            }`}
+            size={18}
+            className="transition-colors duration-200"
+            fill={game.isFavorite ? "currentColor" : "none"}
             aria-hidden="true"
           />
         </button>
       </div>
 
       {/* Game Info */}
-      <div className="flex-1 p-4 flex flex-col">
-        {/* Title */}
-        <h3 className="font-bold text-slate-900 text-base line-clamp-2 mb-2">
-          {game.name}
-        </h3>
-
-        {/* Type Badge */}
-        <div className="flex gap-2 mb-3 flex-wrap">
+      <div className="flex-1 p-4 flex flex-col space-y-3">
+        {/* Type Badges */}
+        <div className="flex gap-2 flex-wrap">
           <span
-            className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-              game.type === "SPORTS"
-                ? "bg-cyan-100 text-cyan-700"
-                : "bg-violet-100 text-violet-700"
-            }`}
-            aria-label={`Game type: ${
-              game.type === "SPORTS" ? "Sports" : "Casino"
-            }`}
+            className={cn(
+              "inline-flex px-2.5 py-1 text-xs font-bold rounded-full",
+              "backdrop-blur-sm border",
+              isSports
+                ? "bg-cyan-400/20 border-cyan-300/30 text-cyan-600"
+                : "bg-violet-400/20 border-violet-300/30 text-violet-600"
+            )}
+            aria-label={`Game type: ${isSports ? "Sports" : "Casino"}`}
           >
-            {game.type === "SPORTS" ? "🏆 Sports" : "🎰 Casino"}
+            {isSports ? "🏆 Sports" : "🎰 Casino"}
           </span>
 
           {game.sport && (
             <span
-              className="inline-block px-2 py-1 text-xs font-medium rounded bg-slate-100 text-slate-700"
+              className="inline-flex px-2.5 py-1 text-xs font-semibold rounded-full badge-glass"
               aria-label={`Sport: ${game.sport}`}
             >
               {game.sport}
             </span>
           )}
-        </div>
 
-        {/* Provider & Teams */}
-        <p className="text-sm text-slate-600 line-clamp-2 mb-3 flex-1">
-          {game.teamA && game.teamB
-            ? `${game.teamA} vs ${game.teamB}`
-            : game.category || game.provider || "No description available"}
-        </p>
-
-        {/* Footer Info */}
-        <div className="flex items-center justify-between text-xs text-slate-500 mb-3 pt-3 border-t border-slate-100 flex-wrap gap-2">
           {game.provider && (
             <span
-              className="font-medium"
+              className="inline-flex px-2.5 py-1 text-xs font-semibold rounded-full badge-glass"
               aria-label={`Provider: ${game.provider}`}
             >
               {game.provider}
             </span>
           )}
-          {game.league && (
-            <span
-              className="text-cyan-600 font-semibold"
-              aria-label={`League: ${game.league}`}
-            >
-              {game.league}
-            </span>
-          )}
         </div>
 
+        {/* Title */}
+        <h3 className="font-bold text-slate-900 text-base line-clamp-2 leading-tight">
+          {game.name}
+        </h3>
+
+        {/* Description */}
+        <p className="text-sm text-slate-600 line-clamp-2 flex-1">
+          {game.teamA && game.teamB
+            ? `${game.teamA} vs ${game.teamB}`
+            : game.category || "Ready to play"}
+        </p>
+
         {/* Play Button */}
-        <Button
+        <button
           onClick={handlePlayClick}
-          variant="primary"
-          size="sm"
-          className="w-full"
+          className={cn(
+            "w-full flex items-center justify-center gap-2",
+            "px-4 py-2.5 rounded-lg font-semibold text-sm",
+            "bg-gradient-primary text-white",
+            "hover:shadow-glow-primary hover:scale-105",
+            "transition-all duration-200 active:scale-95",
+            "focus:outline-none focus:ring-2 focus:ring-cyan-400"
+          )}
           aria-label={`Play ${game.name}`}
         >
+          <Play size={16} />
           Play Now
-        </Button>
+        </button>
       </div>
     </article>
   );

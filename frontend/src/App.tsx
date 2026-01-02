@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
+import { AppShell } from "@/components/layout/AppShell";
 
 // Pages (to be created)
 import LoginPage from "@/pages/LoginPage";
@@ -26,12 +27,14 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-            {/* Protected routes */}
+            {/* Protected routes with AppShell layout */}
             <Route
               path="/games"
               element={
                 <AuthGuard>
-                  <GamesPage />
+                  <AppShell>
+                    <GamesPage />
+                  </AppShell>
                 </AuthGuard>
               }
             />
@@ -39,7 +42,9 @@ function App() {
               path="/favorites"
               element={
                 <AuthGuard>
-                  <FavoritesPage />
+                  <AppShell>
+                    <FavoritesPage />
+                  </AppShell>
                 </AuthGuard>
               }
             />

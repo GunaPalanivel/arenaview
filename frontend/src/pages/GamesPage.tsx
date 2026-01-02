@@ -1,17 +1,16 @@
-import React, { useState, useCallback } from "react";
+import type React from "react";
+import { useCallback } from "react";
 import { useToast } from "@/context/ToastContext";
-import GameSearch from "@/components/games/GameSearch";
-import GameFilter, {
-  type GameFilterOptions,
-} from "@/components/games/GameFilter";
+import { FilterBar } from "@/components/filters/FilterBar";
 import GameList from "@/components/games/GameList";
+import { GameCardHero } from "@/components/games/GameCardHero";
 import { useGames, type Game } from "@/hooks/useGames";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useFilters } from "@/hooks/useFilters";
 
 const GamesPage: React.FC = () => {
   const { showToast } = useToast();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState<GameFilterOptions>({});
+  const { filters, clearAllFilters } = useFilters();
 
   // Fetch games with infinite scroll, search, and filters
   const {
@@ -23,8 +22,8 @@ const GamesPage: React.FC = () => {
     error,
   } = useGames({
     limit: 12,
-    search: searchQuery,
-    type: filters.type || undefined,
+    search: filters.search,
+    type: (filters.type as "SPORTS" | "CASINO" | undefined) || undefined,
     sport: filters.sport,
   });
 
@@ -35,13 +34,10 @@ const GamesPage: React.FC = () => {
     fetchNextPage();
   }, [fetchNextPage]);
 
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-  }, []);
-
-  const handleFilterChange = useCallback((newFilters: GameFilterOptions) => {
-    setFilters(newFilters);
-  }, []);
+  const handleFilterChange = () => {
+    // Reset to first page when filters change
+    fetchNextPage();
+  };
 
   const handleFavoriteToggle = async (gameId: string) => {
     try {
@@ -57,7 +53,6 @@ const GamesPage: React.FC = () => {
   };
 
   const handlePlayGame = (game: Game) => {
-    // TODO: Implement game launch
     showToast(`Launching ${game.name}...`, "info");
   };
 
@@ -67,65 +62,130 @@ const GamesPage: React.FC = () => {
     isFavorite: isFavorite(game.id),
   }));
 
+  // Get featured game (first game or highest rated)
+  const featuredGame = gamesWithFavorites[0];
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex flex-col gap-2 mb-6">
-            <h1 className="text-4xl font-bold text-slate-900">Games</h1>
-            <p className="text-slate-600">
-              Explore our collection of{" "}
-              {games.length > 0 ? games.length : "amazing"} sports and casino
-              games
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Hero Section */}
+      <section className="container-page pb-0 pt-8 sm:pt-12">
+        <div className="space-y-4 mb-8">
+          <div className="space-y-2">
+            <h1 className="text-4xl sm:text-5xl font-bold font-display text-gradient-primary">
+              Game Arena
+            </h1>
+            <p className="text-lg text-slate-600">
+              Discover{" "}
+              <span className="font-semibold text-slate-900">
+                premium gaming
+              </span>{" "}
+              experiences with our curated collection of sports and casino
+              games.
             </p>
           </div>
 
-          {/* Search and Filter Bar */}
-          <div className="space-y-4">
-            <GameSearch
-              onSearch={handleSearch}
-              isLoading={isLoading}
-              placeholder="Search games by name, sport, or provider..."
-            />
-            <GameFilter
-              onFilterChange={handleFilterChange}
-              selectedFilters={filters}
-              isLoading={isLoading}
-            />
+          {/* Stats Row */}
+          <div className="flex flex-wrap gap-4 py-4">
+            <div className="card-base backdrop-blur-xl">
+              <div className="text-2xl font-bold text-cyan-600">
+                {games.length}+
+              </div>
+              <p className="text-sm text-slate-600">Games Available</p>
+            </div>
+            <div className="card-base backdrop-blur-xl">
+              <div className="text-2xl font-bold text-violet-600">24/7</div>
+              <p className="text-sm text-slate-600">Live Streaming</p>
+            </div>
+            <div className="card-base backdrop-blur-xl">
+              <div className="text-2xl font-bold text-emerald-600">100K+</div>
+              <p className="text-sm text-slate-600">Active Players</p>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Filter Bar Section */}
+      <section className="container-page sticky top-20 z-30 py-6 bg-gradient-to-b from-slate-100/95 to-transparent backdrop-blur-md">
+        <FilterBar onFiltersChange={handleFilterChange} />
+      </section>
+
+      {/* Featured Game Section */}
+      {featuredGame && !filters.type && !filters.sport && !filters.search && (
+        <section className="container-page py-8">
+          <h2 className="text-2xl font-bold mb-6">Featured Game</h2>
+          <GameCardHero
+            game={featuredGame}
+            onPlay={() => handlePlayGame(featuredGame)}
+            onFavorite={() => handleFavoriteToggle(featuredGame.id)}
+            isFavorite={featuredGame.isFavorite}
+            featured
+          />
+        </section>
+      )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <main className="container-page py-8">
         {error && (
           <div
             role="alert"
-            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
+            className="mb-8 p-4 bg-red-50/50 border border-red-200/50 rounded-2xl glass animate-slide-down"
           >
             <p className="text-red-700 font-medium">
-              Failed to load games. Please try again later.
+              ⚠️ Failed to load games. Please try again later.
             </p>
           </div>
         )}
 
-        <GameList
-          games={gamesWithFavorites}
-          isLoading={isLoading}
-          isFetchingNextPage={isFetchingNextPage}
-          hasMore={hasMore}
-          onLoadMore={handleLoadMore}
-          onFavoriteToggle={handleFavoriteToggle}
-          onPlay={handlePlayGame}
-          isLoadingFavorite={isToggling ? games[0]?.id ?? null : null}
-          emptyMessage={
-            searchQuery || filters.type || filters.sport
-              ? "No games match your search or filters. Try adjusting your criteria."
-              : "No games available at the moment. Check back soon!"
-          }
-        />
-      </div>
+        {/* Games List/Grid */}
+        {gamesWithFavorites.length > 0 ? (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold mb-6">
+                {filters.type || filters.sport || filters.search
+                  ? "Search Results"
+                  : "All Games"}
+              </h2>
+              <GameList
+                games={gamesWithFavorites}
+                isLoading={isLoading}
+                isFetchingNextPage={isFetchingNextPage}
+                hasMore={hasMore}
+                onLoadMore={handleLoadMore}
+                onFavoriteToggle={handleFavoriteToggle}
+                onPlay={handlePlayGame}
+                isLoadingFavorite={isToggling ? games[0]?.id ?? null : null}
+              />
+            </div>
+          </div>
+        ) : isLoading ? (
+          // Loading skeleton
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="card-base h-80 animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          // Empty state
+          <div className="text-center py-16 px-6">
+            <div className="inline-block p-4 mb-4 glass rounded-full">
+              <div className="text-4xl">🎮</div>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">
+              No games found
+            </h3>
+            <p className="text-slate-600 mb-6">
+              {filters.type || filters.sport || filters.search
+                ? "Try adjusting your search or filters"
+                : "No games available at the moment"}
+            </p>
+            {(filters.type || filters.sport || filters.search) && (
+              <button onClick={clearAllFilters} className="btn-primary">
+                Clear Filters
+              </button>
+            )}
+          </div>
+        )}
+      </main>
     </div>
   );
 };
