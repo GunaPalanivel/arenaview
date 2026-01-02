@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useToast } from "@/context/ToastContext";
+import GameSearch from "@/components/games/GameSearch";
+import GameFilter, { type GameFilterOptions } from "@/components/games/GameFilter";
 import GameList from "@/components/games/GameList";
 import { useGames, type Game } from "@/hooks/useGames";
 
 const GamesPage: React.FC = () => {
   const { showToast } = useToast();
   const [loadingFavorite, setLoadingFavorite] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState<GameFilterOptions>({});
 
-  // Fetch games with infinite scroll
+  // Fetch games with infinite scroll, search, and filters
   const {
     games,
     hasMore,
@@ -17,11 +21,22 @@ const GamesPage: React.FC = () => {
     error,
   } = useGames({
     limit: 12,
+    search: searchQuery,
+    type: filters.type,
+    sport: filters.sport,
   });
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     fetchNextPage();
-  };
+  }, [fetchNextPage]);
+
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  const handleFilterChange = useCallback((newFilters: GameFilterOptions) => {
+    setFilters(newFilters);
+  }, []);
 
   const handleFavoriteToggle = async (gameId: string) => {
     setLoadingFavorite(gameId);
@@ -51,13 +66,27 @@ const GamesPage: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 mb-6">
             <h1 className="text-4xl font-bold text-slate-900">Games</h1>
             <p className="text-slate-600">
               Explore our collection of{" "}
               {games.length > 0 ? games.length : "amazing"} sports and casino
               games
             </p>
+          </div>
+
+          {/* Search and Filter Bar */}
+          <div className="space-y-4">
+            <GameSearch
+              onSearch={handleSearch}
+              isLoading={isLoading}
+              placeholder="Search games by name, sport, or provider..."
+            />
+            <GameFilter
+              onFilterChange={handleFilterChange}
+              selectedFilters={filters}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </div>
@@ -81,7 +110,11 @@ const GamesPage: React.FC = () => {
           onFavoriteToggle={handleFavoriteToggle}
           onPlay={handlePlayGame}
           isLoadingFavorite={loadingFavorite}
-          emptyMessage="No games available at the moment. Check back soon!"
+          emptyMessage={
+            searchQuery || filters.type || filters.sport
+              ? "No games match your search or filters. Try adjusting your criteria."
+              : "No games available at the moment. Check back soon!"
+          }
         />
       </div>
     </div>
@@ -89,3 +122,4 @@ const GamesPage: React.FC = () => {
 };
 
 export default GamesPage;
+
