@@ -80,6 +80,7 @@ export const GameCardHero = ({
         <div className="flex items-center justify-between gap-3">
           {/* Play Button */}
           <button
+            type="button"
             onClick={onPlay}
             className={cn(
               "flex-1 flex items-center justify-center gap-2",
@@ -96,7 +97,11 @@ export const GameCardHero = ({
 
           {/* Favorite Button */}
           <button
+            type="button"
             onClick={onFavorite}
+            aria-label={
+              isFavorite ? "Remove from favorites" : "Add to favorites"
+            }
             className={cn(
               "p-3 rounded-lg transition-all duration-200",
               "hover:scale-110 active:scale-95",
