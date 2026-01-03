@@ -10,6 +10,31 @@ export interface FilterState {
 
 /**
  * Hook for managing filter state with URL parameter sync
+ *
+ * Automatically synchronizes filter state with URL search parameters for
+ * bookmarkable and shareable filtered views.
+ *
+ * @returns {Object} Filter management interface
+ * @returns {FilterState} filters - Current filter values
+ * @returns {Function} updateFilter - Update a specific filter value
+ * @returns {Function} clearFilter - Clear a specific filter value
+ * @returns {Function} clearAllFilters - Clear all filters at once
+ * @returns {Function} getActiveFilterCount - Get the number of active filters
+ *
+ * @example
+ * const { filters, updateFilter, clearAllFilters } = useFilters();
+ *
+ * // Get current filters
+ * console.log(filters.type); // 'SPORTS' or undefined
+ *
+ * // Update a filter
+ * updateFilter('sport', 'Cricket');
+ *
+ * // Clear a specific filter
+ * clearFilter('provider');
+ *
+ * // Clear all filters
+ * clearAllFilters();
  */
 export const useFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();

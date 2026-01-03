@@ -8,11 +8,33 @@ interface UseInfiniteScrollOptions {
 }
 
 /**
- * Hook to handle infinite scroll
- * @param onLoadMore Callback when user scrolls near bottom
- * @param isLoading Whether data is currently loading
- * @param hasMore Whether there are more items to load
- * @param threshold How many pixels from bottom to trigger load (default 200)
+ * Hook to handle infinite scroll with intersection observer
+ *
+ * Automatically triggers a callback when the user scrolls near the bottom of a list.
+ * Uses the Intersection Observer API for efficient scroll detection.
+ *
+ * @param {UseInfiniteScrollOptions} options - Configuration for infinite scroll behavior
+ * @param {Function} options.onLoadMore - Callback invoked when user scrolls near bottom
+ * @param {boolean} options.isLoading - Whether data is currently being loaded
+ * @param {boolean} options.hasMore - Whether there are more items to load
+ * @param {number} [options.threshold=200] - Distance in pixels from bottom to trigger load
+ *
+ * @returns {React.RefObject<HTMLDivElement>} Ref to attach to the bottom sentinel element
+ *
+ * @example
+ * const sentinelRef = useInfiniteScroll({
+ *   onLoadMore: () => fetchNextPage(),
+ *   isLoading: isFetching,
+ *   hasMore: hasNextPage,
+ *   threshold: 300
+ * });
+ *
+ * return (
+ *   <>
+ *     <div>{items.map(item => <div key={item.id}>{item.name}</div>)}</div>
+ *     <div ref={sentinelRef} />
+ *   </>
+ * );
  */
 export function useInfiniteScroll({
   onLoadMore,

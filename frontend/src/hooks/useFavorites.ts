@@ -20,6 +20,29 @@ interface FavoritesResponse {
 
 /**
  * Hook to manage user's favorite games
+ *
+ * Provides functionality to fetch, add, and remove games from favorites.
+ * Uses React Query for state management with automatic cache invalidation.
+ *
+ * @returns {Object} Favorites management interface
+ * @returns {Favorite[]} favorites - Array of user's favorite games with full game data
+ * @returns {Function} isFavorite - Check if a specific game is favorited
+ * @returns {Function} toggleFavorite - Add or remove a game from favorites
+ * @returns {boolean} isToggling - Whether a favorite toggle is in progress
+ * @returns {boolean} isLoading - Whether favorites are being fetched
+ * @returns {Error|null} error - Any error from favorites query or mutation
+ * @returns {Function} refetch - Manually refetch user's favorites
+ *
+ * @example
+ * const { favorites, isFavorite, toggleFavorite } = useFavorites();
+ *
+ * // Check if game is favorited
+ * if (isFavorite(gameId)) {
+ *   // Game is in favorites
+ * }
+ *
+ * // Toggle favorite status
+ * toggleFavorite(gameId);
  */
 export function useFavorites() {
   const queryClient = useQueryClient();
