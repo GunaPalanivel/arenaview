@@ -1,10 +1,9 @@
 import * as bcrypt from "bcrypt";
-
-const SALT_ROUNDS = 12;
+import { SECURITY } from "../config/constants";
 
 export class PasswordService {
   static async hash(password: string): Promise<string> {
-    return bcrypt.hash(password, SALT_ROUNDS);
+    return bcrypt.hash(password, SECURITY.BCRYPT_SALT_ROUNDS);
   }
 
   static async compare(password: string, hash: string): Promise<boolean> {

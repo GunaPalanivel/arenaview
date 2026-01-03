@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { MobileNav } from "./MobileNav";
-import { useBreakpoint } from "../../hooks/useMediaQuery";
+import { useBreakpoint } from "@/hooks/useMediaQuery";
 
 interface AppShellProps {
   children: ReactNode;

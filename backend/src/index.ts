@@ -8,7 +8,6 @@ import { errorHandler } from "./middleware/error.middleware";
 import authRoutes from "./routes/auth.routes";
 import gamesRoutes from "./routes/games.routes";
 import favoritesRoutes from "./routes/favorites.routes";
-import testRoutes from "./routes/test.routes";
 
 dotenv.config();
 
@@ -32,7 +31,6 @@ app.get("/health", (_req: Request, res: Response) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/games", gamesRoutes);
 app.use("/api/favorites", favoritesRoutes);
-app.use("/api/test", testRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

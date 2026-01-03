@@ -1,6 +1,6 @@
 import { Home, Heart, Settings, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 
 interface NavItem {
   label: string;

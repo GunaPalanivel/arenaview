@@ -8,7 +8,13 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
-  console.error("Error:", err);
+  const timestamp = new Date().toISOString();
+  const errorType = err.constructor.name;
+
+  console.error(`[${timestamp}] ${errorType}:`, {
+    message: err.message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+  });
 
   // Handle AppError (our custom errors)
   if (err instanceof AppError) {

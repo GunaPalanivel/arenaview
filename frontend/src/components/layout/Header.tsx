@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Heart, LogOut, Menu, X } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 
 export const Header = () => {

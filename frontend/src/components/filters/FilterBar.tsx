@@ -1,8 +1,8 @@
 import { Search, X } from "lucide-react";
 import { FilterPill } from "./FilterPill";
 import { FilterDropdown, type FilterOption } from "./FilterDropdown";
-import { useFilters } from "../../hooks/useFilters";
-import { cn } from "../../utils/cn";
+import { useFilters } from "@/hooks/useFilters";
+import { cn } from "@/utils/cn";
 
 interface FilterBarProps {
   onFiltersChange?: () => void;

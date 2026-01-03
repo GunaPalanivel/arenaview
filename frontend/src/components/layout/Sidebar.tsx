@@ -1,6 +1,6 @@
-import { Home, Heart, Settings, Info } from "lucide-react";
+import { Home, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 
 interface NavItem {
   label: string;
@@ -25,8 +25,6 @@ export const Sidebar = ({ isOpen = true }: SidebarProps) => {
       href: "/favorites",
       badge: 0,
     },
-    { label: "Settings", icon: <Settings size={20} />, href: "/settings" },
-    { label: "About", icon: <Info size={20} />, href: "/about" },
   ];
 
   return (

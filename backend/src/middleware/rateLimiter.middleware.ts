@@ -1,5 +1,6 @@
 import rateLimit from "express-rate-limit";
 import { Request, Response } from "express";
+import { RATE_LIMITS } from "../config/constants";
 
 // Extend Express Request type to include rateLimit
 declare global {
@@ -33,8 +34,8 @@ const rateLimitResponse = (req: Request, res: Response) => {
 
 // Strict limiter for auth endpoints (prevent brute force)
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 requests per window
+  windowMs: RATE_LIMITS.AUTH_WINDOW_MS,
+  max: RATE_LIMITS.AUTH_MAX_REQUESTS,
   keyGenerator,
   handler: rateLimitResponse,
   skipSuccessfulRequests: false, // Count all requests
@@ -43,8 +44,8 @@ export const authLimiter = rateLimit({
 
 // Stricter limiter for registration (prevent spam accounts)
 export const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 requests per window
+  windowMs: RATE_LIMITS.REGISTRATION_WINDOW_MS,
+  max: RATE_LIMITS.REGISTRATION_MAX_REQUESTS,
   keyGenerator,
   handler: rateLimitResponse,
   message: "Too many registration attempts, please try again later",
@@ -52,8 +53,8 @@ export const registerLimiter = rateLimit({
 
 // General API limiter (prevent abuse)
 export const apiLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 100, // 100 requests per window
+  windowMs: RATE_LIMITS.API_WINDOW_MS,
+  max: RATE_LIMITS.API_MAX_REQUESTS,
   keyGenerator,
   skipSuccessfulRequests: false,
   message: "Too many requests from this IP, please try again later",
@@ -61,8 +62,8 @@ export const apiLimiter = rateLimit({
 
 // Favorites limiter (30 toggles per minute for POST/DELETE)
 export const favoritesLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 30, // 30 requests per window
+  windowMs: RATE_LIMITS.FAVORITES_WINDOW_MS,
+  max: RATE_LIMITS.FAVORITES_MAX_REQUESTS,
   keyGenerator,
   handler: rateLimitResponse,
   skipSuccessfulRequests: false,

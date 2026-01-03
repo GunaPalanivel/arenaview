@@ -1,6 +1,6 @@
 import { Heart, Play } from "lucide-react";
 import type { Game } from "@/hooks/useGames";
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 
 interface GameCardHeroProps {
   game: Game;
